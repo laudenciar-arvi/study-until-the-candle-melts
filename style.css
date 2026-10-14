@@ -1,0 +1,445 @@
+```css
+/* =========================
+   GENERAL PAGE
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f4ef;
+    color: #333;
+    transition: background-color 0.6s ease;
+}
+
+body.break-mode.short-break {
+    background-color: #dff5df;
+}
+
+body.break-mode.long-break {
+    background-color: #dff1ff;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.app {
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.app h2 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+    color: #666;
+}
+
+/* =========================
+   ANIMATION AREA
+========================= */
+
+.animation-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 45px 0;
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #faf8f4;
+    border: 1px solid #eee9e0;
+    border-radius: 20px;
+    transition: background-color 0.6s ease;
+}
+
+body.break-mode.short-break .animation-area {
+    background-color: #dff5df;
+}
+
+body.break-mode.long-break .animation-area {
+    background-color: #dff1ff;
+}
+
+/* =========================
+   TIMER MODE BUTTONS
+========================= */
+
+.timer-mode-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 25px;
+    padding: 5px;
+}
+
+.mode-button {
+    position: relative;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: #626262;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.mode-button:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+.mode-button.active {
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #292929;
+}
+
+.mode-button.active::after {
+    content: "";
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    bottom: -4px;
+    height: 3px;
+    border-radius: 10px;
+}
+
+#study-mode-button.active::after {
+    background-color: #c94b42;
+}
+
+#short-break-button.active::after {
+    background-color: #579b69;
+}
+
+#long-break-button.active::after {
+    background-color: #5594c7;
+}
+
+/* =========================
+   CANDLE MESSAGE
+========================= */
+
+#journeyMessage {
+    margin: 0 0 18px;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    text-align: center;
+}
+
+/* =========================
+   CANDLE SCENE
+========================= */
+
+.candle-scene {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 180px;
+    height: 220px;
+    margin: 0 auto 35px;
+}
+
+.candle {
+    position: relative;
+    width: 70px;
+    height: 140px;
+    background: linear-gradient(
+        to right,
+        #f4e4c1,
+        #fff4d8,
+        #ead3a5
+    );
+    border-radius: 8px 8px 5px 5px;
+    transform-origin: bottom center;
+    transition:
+        height 1s linear,
+        border-radius 1s linear;
+}
+
+
+/* =========================
+   FLAME
+========================= */
+
+.flame {
+    position: absolute;
+    bottom: calc(100% - 1px);
+    left: 50%;
+
+    width: 28px;
+    height: 45px;
+
+    transform: translateX(-50%);
+    transform-origin: bottom center;
+
+    background-color: #ffb52e;
+    border-radius: 50% 50% 50% 50%;
+
+    animation: flameFlicker 1.2s ease-in-out infinite;
+}
+
+.flame::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+
+    width: 12px;
+    height: 22px;
+
+    transform: translateX(-50%);
+
+    background-color: #fff4b0;
+    border-radius: 50%;
+}
+
+@keyframes flameFlicker {
+    0% {
+        transform: translateX(-50%) scale(1) rotate(-2deg);
+    }
+
+    25% {
+        transform: translateX(-50%) scale(0.92, 1.08) rotate(2deg);
+    }
+
+    50% {
+        transform: translateX(-50%) scale(1.05, 0.95) rotate(-1deg);
+    }
+
+    75% {
+        transform: translateX(-50%) scale(0.94, 1.06) rotate(2deg);
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1) rotate(-2deg);
+    }
+}
+
+/* =========================
+   WAX DRIPS
+========================= */
+
+.wax-drip {
+    position: absolute;
+    top: 0;
+    background-color: #f4e4c1;
+    border-radius: 0 0 10px 10px;
+    transition:
+        height 1s linear,
+        width 1s linear;
+}
+
+.drip-one {
+    left: 12px;
+    width: 12px;
+    height: 25px;
+}
+
+.drip-two {
+    right: 15px;
+    width: 10px;
+    height: 18px;
+}
+
+.drip-three {
+    left: 32px;
+    width: 8px;
+    height: 12px;
+}
+
+/* =========================
+   MELTED WAX
+========================= */
+
+.melted-wax {
+    position: absolute;
+    bottom: 0;
+    width: 95px;
+    height: 12px;
+    background-color: #ead3a5;
+    border-radius: 50%;
+    transition:
+        width 1s linear,
+        height 1s linear;
+}
+
+/* =========================
+   TIMER DISPLAY
+========================= */
+
+#timer {
+    margin-bottom: 25px;
+    font-size: 56px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================
+   TIMER CONTROLS
+========================= */
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.timer-controls button {
+    width: 100px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.timer-controls button:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}
+
+.timer-controls button:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   STUDY TIME PRESETS
+========================= */
+
+.study-time {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.study-time h2 {
+    margin-bottom: 20px;
+}
+
+.study-time button {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    min-height: 70px;
+    margin: 5px;
+    padding: 12px 15px;
+    border: 1px solid #e1ddd5;
+    border-radius: 12px;
+    background-color: #fff;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.study-time button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.study-time button span:first-child {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.study-time button span:last-child {
+    margin-top: 5px;
+    color: #777;
+    font-size: 13px;
+}
+
+/* =========================
+   MOBILE RESPONSIVENESS
+========================= */
+
+@media (max-width: 600px) {
+    .app {
+        width: 94%;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .animation-area {
+        margin: 25px 0;
+        padding: 40px 12px;
+    }
+
+    #journeyMessage {
+        font-size: 30px;
+        letter-spacing: -0.5px;
+    }
+
+    #timer {
+        font-size: 44px;
+    }
+
+    .timer-mode-buttons {
+        gap: 3px;
+        width: 100%;
+    }
+
+    .mode-button {
+        flex: 1;
+        padding: 10px 6px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .timer-controls {
+        gap: 8px;
+    }
+
+    .timer-controls button {
+        width: 90px;
+    }
+
+    .study-time button {
+        width: 105px;
+    }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    .flame {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+    }
+}
+```
