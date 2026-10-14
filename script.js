@@ -22,6 +22,61 @@ let completedSessions = 0;
 
 
 /* =========================================
+   TIMER COMPLETION ALARM
+========================================= */
+
+let alarmAudioContext = null;
+
+function playAlarm() {
+    try {
+        // Create the audio context when the alarm is needed
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            console.warn("Web Audio is not supported in this browser.");
+            return;
+        }
+
+        if (!alarmAudioContext) {
+            alarmAudioContext = new AudioContextClass();
+        }
+
+        const playTone = () => {
+            const oscillator = alarmAudioContext.createOscillator();
+            const gain = alarmAudioContext.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = 880;
+
+            // Gentle fade-in and fade-out
+            const now = alarmAudioContext.currentTime;
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.25, now + 0.04);
+            gain.gain.setValueAtTime(0.25, now + 0.22);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+            oscillator.connect(gain);
+            gain.connect(alarmAudioContext.destination);
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.46);
+        };
+
+        if (alarmAudioContext.state === "suspended") {
+            alarmAudioContext.resume().then(playTone).catch(error => {
+                console.warn("Could not play the alarm:", error);
+            });
+        } else {
+            playTone();
+        }
+    } catch (error) {
+        console.warn("Could not play the alarm:", error);
+    }
+}
+
+/* =========================================
    2. HTML ELEMENTS
 ========================================= */
 
@@ -192,6 +247,8 @@ function startTimer() {
 
         if (timeRemaining <= 0) {
             stopTimer();
+
+            playAlarm();
 
             if (timerMode === "study") {
                 finishStudySession();
