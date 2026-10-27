@@ -29,12 +29,11 @@ let alarmAudioContext = null;
 
 function playAlarm() {
     try {
-        // Create the audio context when the alarm is needed
         const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
 
         if (!AudioContextClass) {
-            console.warn("Web Audio is not supported in this browser.");
+            console.warn("Web Audio is not supported.");
             return;
         }
 
@@ -42,34 +41,78 @@ function playAlarm() {
             alarmAudioContext = new AudioContextClass();
         }
 
-        const playTone = () => {
-            const oscillator = alarmAudioContext.createOscillator();
-            const gain = alarmAudioContext.createGain();
+        const ctx = alarmAudioContext;
 
-            oscillator.type = "sine";
-            oscillator.frequency.value = 880;
+        const playChime = () => {
+            const now = ctx.currentTime + 0.05;
 
-            // Gentle fade-in and fade-out
-            const now = alarmAudioContext.currentTime;
+            // Three pairs of clear, alternating chimes
+            const notes = [
+                { frequency: 880, start: 0.00 },
+                { frequency: 1174.66, start: 0.28 },
+                { frequency: 880, start: 0.72 },
+                { frequency: 1174.66, start: 1.00 },
+                { frequency: 880, start: 1.44 },
+                { frequency: 1174.66, start: 1.72 }
+            ];
 
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.25, now + 0.04);
-            gain.gain.setValueAtTime(0.25, now + 0.22);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+            notes.forEach(({ frequency, start }) => {
+                const oscillator = ctx.createOscillator();
+                const gain = ctx.createGain();
 
-            oscillator.connect(gain);
-            gain.connect(alarmAudioContext.destination);
+                const toneStart = now + start;
+                const toneEnd = toneStart + 0.34;
 
-            oscillator.start(now);
-            oscillator.stop(now + 0.46);
+                // A fuller, clearer chime
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(
+                    frequency,
+                    toneStart
+                );
+
+                gain.gain.setValueAtTime(0.001, toneStart);
+                gain.gain.linearRampToValueAtTime(
+                    0.32,
+                    toneStart + 0.025
+                );
+                gain.gain.setValueAtTime(
+                    0.32,
+                    toneStart + 0.16
+                );
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001,
+                    toneEnd
+                );
+
+                oscillator.connect(gain);
+                gain.connect(ctx.destination);
+
+                oscillator.onended = () => {
+                    oscillator.disconnect();
+                    gain.disconnect();
+                };
+
+                oscillator.start(toneStart);
+                oscillator.stop(toneEnd);
+            });
+
+            console.log("🔔 Timer completion chime played.");
         };
 
-        if (alarmAudioContext.state === "suspended") {
-            alarmAudioContext.resume().then(playTone).catch(error => {
-                console.warn("Could not play the alarm:", error);
-            });
+        if (ctx.state === "suspended") {
+            ctx.resume()
+                .then(() => {
+                    if (ctx.state === "running") {
+                        playChime();
+                    }
+                })
+                .catch(error => {
+                    console.warn("Could not resume alarm audio:", error);
+                });
+        } else if (ctx.state === "running") {
+            playChime();
         } else {
-            playTone();
+            console.warn("Alarm audio context is unavailable:", ctx.state);
         }
     } catch (error) {
         console.warn("Could not play the alarm:", error);
